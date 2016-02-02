@@ -1,14 +1,61 @@
 import getopt
 import sys
+import os
 
-print 'begin build'
+print 'builder start ...'
 
-print sys.argv[0]
+app_type = "jar"
 
-opts, args = getopt.getopt(sys.argv[1:], "ih:o:")
+app_path = "~/"
+
+app_bind = ""
+
+app_server_name = ""
+
+app_version = "0.0"
+
+
+def exit_with_msg(msg):
+    print msg
+    exit(1)
+
+try:
+    opts, args = getopt.getopt(sys.argv[1:], "t:u:p:n:v:")
 
 for opt, value in opts:
-    if opt == '-i':
-        print "i :", value
-    elif opt == '-h':
-        print "h :", value
+    if opt == '-t':
+        print "-t :", value
+        if value not in ("jar", "war"):
+            exit_with_msg("invalid value : \'-t\' :" + value)
+
+        app_type = value
+
+    elif opt == '-u':
+        print "-u :", value
+        if not os.path.exists(value):
+            exit_with_msg("invalid value : \'-p\' :" + value)
+
+        app_path = value
+
+    elif opt == '-p':
+        print '-p', value
+
+        app_bind = value
+
+    elif opt == '-n':
+        print '-n :', value
+
+        if not value:
+            exit_with_msg("invalid value  \'-n\'" + value)
+
+        app_server_name = value
+
+    elif opt == '-v':
+        print '-v :', value
+        if not value:
+            exit_with_msg("invalid value  \'-v\'" + value)
+
+        app_version = value
+
+    else:
+        exit_with_msg("unknown arg:" + opt)
