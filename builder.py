@@ -4,11 +4,12 @@ import os
 
 print 'builder start ...'
 
+# def args
 app_type = "jar"
 
 app_path = "~/"
 
-app_bind = ""
+app_bind = {}
 
 app_server_name = ""
 
@@ -19,8 +20,8 @@ def exit_with_msg(msg):
     print msg
     exit(1)
 
-try:
-    opts, args = getopt.getopt(sys.argv[1:], "t:u:p:n:v:")
+# args resolver
+opts, args = getopt.getopt(sys.argv[1:], "t:u:p:n:v:")
 
 for opt, value in opts:
     if opt == '-t':
@@ -40,7 +41,15 @@ for opt, value in opts:
     elif opt == '-p':
         print '-p', value
 
-        app_bind = value
+        # like "80:8080#443:8443"
+        if value:
+            bind_list = value.split('#')
+
+            for bind in bind_list:
+                ip, port = bind.split(":")
+                app_bind[ip] = port
+
+        print app_bind
 
     elif opt == '-n':
         print '-n :', value
@@ -59,3 +68,5 @@ for opt, value in opts:
 
     else:
         exit_with_msg("unknown arg:" + opt)
+
+# check necessary
