@@ -10,9 +10,9 @@ import webapp_dockerfile as war
 """
 config 4 builder
 """
-setup_path = "/data3/docker_file/"
+setup_path = "/tmp/data3/docker_file/"
 
-tomcat_path = "/data3/tomcat8"
+tomcat_path = "/tmp/data3/tomcat8"
 
 
 print 'builder start ...'
@@ -31,6 +31,12 @@ app_version = "0.0"
 app_author = "nobody"
 
 app_author_mail = "nobody@sample.com"
+
+jar_docker_file = ""
+
+war_docker_file = ""
+
+html_docker_file = ""
 
 
 def exit_with_msg(msg):
@@ -51,7 +57,7 @@ for opt, value in opts:
     elif opt == '-u':
         print "-u :", value
         if not os.path.exists(value):
-            exit_with_msg("invalid value : \'-p\' :" + value)
+            exit_with_msg("file not found : \'-u\' :" + value)
 
         app_path = value
 
@@ -120,16 +126,19 @@ if app_type not in ("war", "jar", "html"):
 
 # replace dockerfile
 def replace_args_4_jar():
-    jar.jar_dockerfile.replace("<<._ AUTHOR>>", app_author)
-    jar.jar_dockerfile.replace("<<._ AUTHOR_MAIL>>", app_author_mail)
+    print "make docker file 4 jar"
+    jar_docker_file.replace("<<._ AUTHOR>>", app_author)
+    jar_docker_file.replace("<<._ AUTHOR_MAIL>>", app_author_mail)
 
 
 def replace_args_4_war():
-    war.webapp_dockerfile.replace("<<._ AUTHOR>>", app_author)
-    war.webapp_dockerfile.replace("<<._ AUTHOR_MAIL>>", app_author_mail)
+    print "make docker file 4 war"
+    war_docker_file.replace("<<._ AUTHOR>>", app_author)
+    war_docker_file.replace("<<._ AUTHOR_MAIL>>", app_author_mail)
 
 
 def replace_args_4_html():
+    print "make docker file 4 html"
     pass
 
 
@@ -143,21 +152,24 @@ def exec_cmd_via_shell_result_true(cmd):
 # check args with app type
 if app_type == "war":
     check_args_4_webapp()
+    war_docker_file = war.webapp_dockerfile
     replace_args_4_war()
 
 elif app_type == "jar":
     check_args_4_jar()
+    jar_docker_file = jar.jar_dockerfile
     replace_args_4_jar()
 
 elif app_type == "html":
     check_args_4_html()
+    # TODO make html docker file
     replace_args_4_html()
 
 # generator dir name 4 dockerfile
 time_str = time.strftime('%Y_%m_%d_%H_%M_%S',time.localtime(time.time()))
 print "time now:%s" % time_str
 
-dir_name = setup_path + time_str + app_type + app_version
+dir_name = "%s%s_%s_%s" % (setup_path, time_str, app_type, app_version)
 print "making working dir... [%s]" % dir_name
 
 cmd = "mkdir -p %s" % dir_name
@@ -173,8 +185,14 @@ dockerfile_path = "%s/%s" % (dir_name, "Dockerfile")
 
 
 def gen_dockerfile_by_apptype(app_type, dockerfile_path):
-    file = open(dockerfile_path, "rw")
+    #create file
+    print "touch Dockerfile..."
+    cmd = "touch %s" % dockerfile_path
+    exec_cmd_via_shell_result_true(cmd)
 
+    file = open(dockerfile_path, "w")
+
+    print "generator docker file..."
     if app_type == "jar":
         file.write(jar.jar_dockerfile)
     elif app_type == "war":
