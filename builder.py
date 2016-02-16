@@ -227,7 +227,7 @@ def build_jar():
     exec_cmd_via_shell_result_true(cmd)
 
     print "build done! exec downstairs shell ..."
-    print "[ cd %s ; sudo docker build -t \"%s/%s/%s\" . ]" % (dir_name, app_type, app_version, app_server_name)
+    print "[ cd %s ; sudo docker build -t \"%s-%s-%s\" . ]" % (dir_name, app_type, app_version, app_server_name)
 
 
 # war build operation
@@ -244,7 +244,7 @@ def build_war():
     exec_cmd_via_shell_result_true(cmd)
 
     print "build done! exec downstairs shell ..."
-    print "[ cd %s ; sudo build -t \"%s/%s/%s\" ]" % (dir_name, app_type, app_server_name, app_version)
+    print "[ cd %s ; sudo build -t \"%s-%s-%s\" ]" % (dir_name, app_type, app_server_name, app_version)
 
 
 # begin build
