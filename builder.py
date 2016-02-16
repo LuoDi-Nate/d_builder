@@ -151,6 +151,7 @@ def exec_cmd_via_shell_result_true(cmd):
     # in linux , 0 is true, any else will be regarded error
     if result:
         exit_with_msg("error during exec this :[%s]" % cmd)
+    print "done."
 
 # check args with app type
 if app_type == "war":
@@ -180,8 +181,8 @@ cmd = "mkdir -p %s" % dir_name
 exec_cmd_via_shell_result_true(cmd)
 
 # move app to setup path
-cmd = "cp -r %s %s" % (app_path, dir_name)
-exec_cmd_via_shell_result_true(cmd)
+# cmd = "cp -r %s %s" % (app_path, dir_name)
+# exec_cmd_via_shell_result_true(cmd)
 
 
 # generator docker file
@@ -219,16 +220,42 @@ def build_jar():
     exec_cmd_via_shell_result_true(cmd)
 
     # unzip zipfile to deploy
-    cmd = "cd %s ; unzip %s/%s.zip -d firstblood" % (dir_name, dir_name, app_server_name)
+    cmd = "unzip %s/%s.zip -d %s/firstblood" % (app_path, app_server_name, dir_name)
     exec_cmd_via_shell_result_true(cmd)
 
-    cmd = "cp %s/startup.sh %s/firstblood" % (app_path, dir_name)
+    cmd = "cp %s/startup.sh %s/firstblood/startup.sh" % (app_path, dir_name)
     exec_cmd_via_shell_result_true(cmd)
 
     print "build done! exec downstairs shell ..."
-    print "[ cd %s ; sudo docker build -t \"%s/%s\" . ]" % (dir_name, app_type, app_server_name)
+    print "[ cd %s ; sudo docker build -t \"%s/%s/%s\" . ]" % (dir_name, app_type, app_version, app_server_name)
 
 
-build_jar()
+# war build operation
+def build_war():
+    # copy tomcat here
+    cmd = "cp -r %s %s" % (tomcat_path, dir_name)
+    exec_cmd_via_shell_result_true(cmd)
+
+    # deploy
+    cmd = "rm -rf %s/tomcat8/webapp/ROOT/*"
+    exec_cmd_via_shell_result_true(cmd)
+
+    cmd = "unzip %s/%s.war -d %s/tomcat8/webapp/ROOT" % (app_path, app_server_name, dir_name)
+    exec_cmd_via_shell_result_true(cmd)
+
+    print "build done! exec downstairs shell ..."
+    print "[ cd %s ; sudo build -t \"%s/%s/%s\" ]" % (dir_name, app_type, app_server_name, app_version)
+
+
+# begin build
+print "begin build..."
+
+if app_type == "jar":
+    build_jar()
+elif app_type == "war":
+    build_war()
+elif app_type == "html":
+    pass
+
 
 
