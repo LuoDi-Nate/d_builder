@@ -1,9 +1,14 @@
 jar_dockerfile = """
 FROM java
 MAINTAINER <<._ AUTHOR>> <<<._ AUTHOR_MAIL>>>
-RUN mkdir /data
-ADD tomcat8 /data
-ADD deploy /data
+RUN mkdir /deploy
+ADD firstblood /deploy
 
-CMD ["/usr/bin/java", "-jar", /data/deploy/TestDocker.jar]
+RUN chmod 777 /deploy/start.sh
+
+RUN mkdir -p /data/logs
+
+RUN chmod 777 /data/logs
+
+CMD ["nohup","/deploy/start.sh","&"]
 """

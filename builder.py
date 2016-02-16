@@ -127,14 +127,16 @@ if app_type not in ("war", "jar", "html"):
 # replace dockerfile
 def replace_args_4_jar():
     print "make docker file 4 jar"
-    jar_docker_file.replace("<<._ AUTHOR>>", app_author)
-    jar_docker_file.replace("<<._ AUTHOR_MAIL>>", app_author_mail)
+    global jar_docker_file, app_author, app_author_mail
+    jar_docker_file = jar_docker_file.replace("<<._ AUTHOR>>", app_author)
+    jar_docker_file = jar_docker_file.replace("<<._ AUTHOR_MAIL>>", app_author_mail)
 
 
 def replace_args_4_war():
     print "make docker file 4 war"
-    war_docker_file.replace("<<._ AUTHOR>>", app_author)
-    war_docker_file.replace("<<._ AUTHOR_MAIL>>", app_author_mail)
+    global war_docker_file, app_author, app_author_mail
+    war_docker_file = war_docker_file.replace("<<._ AUTHOR>>", app_author)
+    war_docker_file = war_docker_file.replace("<<._ AUTHOR_MAIL>>", app_author_mail)
 
 
 def replace_args_4_html():
@@ -144,6 +146,7 @@ def replace_args_4_html():
 
 # exec shell with this func, if result not 0 , exit with cmd
 def exec_cmd_via_shell_result_true(cmd):
+    print "exec shell : [%s]" % cmd
     result = os.system(cmd)
     # in linux , 0 is true, any else will be regarded error
     if result:
@@ -160,6 +163,7 @@ elif app_type == "jar":
     jar_docker_file = jar.jar_dockerfile
     replace_args_4_jar()
 
+
 elif app_type == "html":
     check_args_4_html()
     # TODO make html docker file
@@ -169,14 +173,14 @@ elif app_type == "html":
 time_str = time.strftime('%Y_%m_%d_%H_%M_%S',time.localtime(time.time()))
 print "time now:%s" % time_str
 
-dir_name = "%s%s_%s_%s" % (setup_path, time_str, app_type, app_version)
+dir_name = "%s%s_%s_%s_%s" % (setup_path, time_str, app_type, app_server_name, app_version)
 print "making working dir... [%s]" % dir_name
 
 cmd = "mkdir -p %s" % dir_name
 exec_cmd_via_shell_result_true(cmd)
 
 # move app to setup path
-cmd = "mv %s %s" % (app_path, dir_name)
+cmd = "cp -r %s %s" % (app_path, dir_name)
 exec_cmd_via_shell_result_true(cmd)
 
 
@@ -194,9 +198,9 @@ def gen_dockerfile_by_apptype(app_type, dockerfile_path):
 
     print "generator docker file..."
     if app_type == "jar":
-        file.write(jar.jar_dockerfile)
+        file.write(jar_docker_file)
     elif app_type == "war":
-        file.write(war.webapp_dockerfile)
+        file.write(war_docker_file)
     elif app_type == "html":
         pass
     else:
@@ -207,5 +211,24 @@ def gen_dockerfile_by_apptype(app_type, dockerfile_path):
 
 # gen
 gen_dockerfile_by_apptype(app_type, dockerfile_path)
+
+
+# jar build operation
+def build_jar():
+    cmd = "mkdir -p %s/firstblood" % dir_name
+    exec_cmd_via_shell_result_true(cmd)
+
+    # unzip zipfile to deploy
+    cmd = "cd %s ; unzip %s/%s.zip -d firstblood" % (dir_name, dir_name, app_server_name)
+    exec_cmd_via_shell_result_true(cmd)
+
+    cmd = "cp %s/startup.sh %s/firstblood" % (app_path, dir_name)
+    exec_cmd_via_shell_result_true(cmd)
+
+    print "build done! exec downstairs shell ..."
+    print "[ cd %s ; sudo docker build -t \"%s/%s\" . ]" % (dir_name, app_type, app_server_name)
+
+
+build_jar()
 
 
