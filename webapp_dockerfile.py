@@ -1,6 +1,6 @@
 webapp_dockerfile = """
 FROM java
-MAINTAINER di luo <di.luo@ele.me>
+MAINTAINER <<._ AUTHOR>> <<<._ AUTHOR_MAIL>>>
 RUN mkdir /tomcat
 ADD tomcat8 /tomcat
 
