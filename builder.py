@@ -10,7 +10,7 @@ import webapp_dockerfile as war
 """
 config 4 builder
 """
-setup_path = "/data3/docker_file"
+setup_path = "/data3/docker_file/"
 
 tomcat_path = "/data3/tomcat8"
 
@@ -134,7 +134,7 @@ def replace_args_4_html():
 
 
 # exec shell with this func, if result not 0 , exit with cmd
-def exec_cmd_via_shell_result_true(self, cmd):
+def exec_cmd_via_shell_result_true(cmd):
     result = os.system(cmd)
     # in linux , 0 is true, any else will be regarded error
     if result:
@@ -188,6 +188,6 @@ def gen_dockerfile_by_apptype(app_type, dockerfile_path):
     file.close()
 
 # gen
-gen_dockerfile_by_apptype(app_type)
+gen_dockerfile_by_apptype(app_type, dockerfile_path)
 
 
