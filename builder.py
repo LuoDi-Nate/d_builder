@@ -1,9 +1,18 @@
 import getopt
 import sys
 import os
+import time
 
 import jar_dockerfile as jar
 import webapp_dockerfile as war
+
+
+"""
+config 4 builder
+"""
+setup_path = "/data3/docker_file"
+
+tomcat_path = "/data3/tomcat8"
 
 
 print 'builder start ...'
@@ -123,6 +132,14 @@ def replace_args_4_war():
 def replace_args_4_html():
     pass
 
+
+# exec shell with this func, if result not 0 , exit with cmd
+def exec_cmd_via_shell_result_true(self, cmd):
+    result = os.system(cmd)
+    # in linux , 0 is true, any else will be regarded error
+    if result:
+        exit_with_msg("error during exec this :[%s]" % cmd)
+
 # check args with app type
 if app_type == "war":
     check_args_4_webapp()
@@ -135,3 +152,42 @@ elif app_type == "jar":
 elif app_type == "html":
     check_args_4_html()
     replace_args_4_html()
+
+# generator dir name 4 dockerfile
+time_str = time.strftime('%Y_%m_%d_%H_%M_%S',time.localtime(time.time()))
+print "time now:%s" % time_str
+
+dir_name = setup_path + time_str + app_type + app_version
+print "making working dir... [%s]" % dir_name
+
+cmd = "mkdir -p %s" % dir_name
+exec_cmd_via_shell_result_true(cmd)
+
+# move app to setup path
+cmd = "mv %s %s" % (app_path, dir_name)
+exec_cmd_via_shell_result_true(cmd)
+
+
+# generator docker file
+dockerfile_path = "%s/%s" % (dir_name, "Dockerfile")
+
+
+def gen_dockerfile_by_apptype(app_type, dockerfile_path):
+    file = open(dockerfile_path, "rw")
+
+    if app_type == "jar":
+        file.write(jar.jar_dockerfile)
+    elif app_type == "war":
+        file.write(war.webapp_dockerfile)
+    elif app_type == "html":
+        pass
+    else:
+        exit_with_msg("wrong app type.")
+
+    file.flush()
+    file.close()
+
+# gen
+gen_dockerfile_by_apptype(app_type)
+
+
