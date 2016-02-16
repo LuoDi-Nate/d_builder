@@ -237,7 +237,7 @@ def build_war():
     exec_cmd_via_shell_result_true(cmd)
 
     # deploy
-    cmd = "rm -rf %s/tomcat8/webapps/ROOT/*"
+    cmd = "rm -rf %s/tomcat8/webapps/ROOT/*" % (dir_name)
     exec_cmd_via_shell_result_true(cmd)
 
     cmd = "unzip %s/%s.war -d %s/tomcat8/webapps/ROOT" % (app_path, app_server_name, dir_name)
