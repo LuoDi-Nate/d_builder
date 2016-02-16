@@ -223,7 +223,7 @@ def build_jar():
     cmd = "unzip %s/%s.zip -d %s/firstblood" % (app_path, app_server_name, dir_name)
     exec_cmd_via_shell_result_true(cmd)
 
-    cmd = "cp %s/startup.sh %s/firstblood/startup.sh" % (app_path, dir_name)
+    cmd = "cp %s/start.sh %s/firstblood/start.sh" % (app_path, dir_name)
     exec_cmd_via_shell_result_true(cmd)
 
     print "build done! exec downstairs shell ..."
