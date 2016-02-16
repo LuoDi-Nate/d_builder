@@ -46,8 +46,8 @@ for opt, value in opts:
             bind_list = value.split('#')
 
             for bind in bind_list:
-                ip, port = bind.split(":")
-                app_bind[ip] = port
+                host_port, virtual_port = bind.split(":")
+                app_bind[host_port] = virtual_port
 
         print app_bind
 
