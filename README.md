@@ -21,7 +21,7 @@ cd d_builder
 * 进入项目根路径
 
 ```
-python builder.py -t war -u /data3/deploy_history/project_0217  -n mercurius-webapi-user -v 0.1 -p 8080:8080
+python builder.py -t war -u /data3/deploy_history/project_0217  -n mercurius-webapi-user -v 0.1 -p 8080:8080 -a M.K -m MountainKing@war3.com
 ```
 * 执行命令 生成dockerfile
 
@@ -56,12 +56,21 @@ python builder.py -t war -u /data3/deploy_history/project_0217  -n mercurius-web
 ```
 -p port binding, the port u need expose, ${host_port}:${virtual_port}
 
-split with "#" if u need bind multiple relation
+split with "#" if u need to bind multiple relation
 eg: 80:8080#443:8443
 ```
 端口绑定关系, 前者是物理机的端口, 后者是docker容器中的端口;
 
 
+```
+-a author name, default "nobody"
+```
+发布者姓名
+
+```
+-m author email, default "nobody@sample.com"
+```
+发布者邮箱
 
 
 

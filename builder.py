@@ -89,6 +89,20 @@ for opt, value in opts:
 
         app_version = value
 
+    elif opt == '-a':
+        print '-a', value
+        if not value:
+            exit_with_msg("invalid value \'-a\'" + value)
+
+        app_author = value
+
+    elif opt == '-m':
+        print '-m', value
+        if not value:
+            exit_with_msg("invalid value \'-m\'" + value)
+
+        app_author_mail = value
+
     else:
         exit_with_msg("unknown arg:" + opt)
 
