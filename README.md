@@ -53,6 +53,13 @@ python builder.py -t war -u /data3/deploy_history/project_0217  -n mercurius-web
 ```
 本次部署的版本信息;
 
+```
+-p port binding, the port u need expose, ${host_port}:${virtual_port}
+
+split with "#" if u need bind multiple relation
+eg: 80:8080#443:8443
+```
+端口绑定关系, 前者是物理机的端口, 后者是docker容器中的端口;
 
 
 
