@@ -44,7 +44,7 @@ def exit_with_msg(msg):
     exit(1)
 
 # args resolver
-opts, args = getopt.getopt(sys.argv[1:], "t:u:p:n:v:")
+opts, args = getopt.getopt(sys.argv[1:], "t:u:p:n:v:a:m:")
 
 for opt, value in opts:
     if opt == '-t':
