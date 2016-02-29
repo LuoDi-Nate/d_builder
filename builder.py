@@ -241,7 +241,11 @@ def build_jar():
     exec_cmd_via_shell_result_true(cmd)
 
     print "build done! exec downstairs shell ..."
-    print "[ cd %s ; sudo docker build -t \"%s-%s-%s\" . ]" % (dir_name, app_type, app_version, app_server_name)
+    cmd = "[ cd %s ; sudo docker build -t \"%s-%s-%s\" . ]" % (dir_name, app_type, app_version, app_server_name)
+
+    exec_cmd_via_shell_result_true(cmd)
+
+    print "sudo docker run -d --name=\'%s\' ${container_hash}" % { app_server_name}
 
 
 # war build operation
@@ -258,8 +262,18 @@ def build_war():
     exec_cmd_via_shell_result_true(cmd)
 
     print "build done! exec downstairs shell ..."
-    print "[ cd %s ; sudo docker build -t \"%s-%s-%s\" . ]" % (dir_name, app_type, app_server_name, app_version)
+    cmd = "[ cd %s ; sudo docker build -t \"%s-%s-%s\" . ]" % (dir_name, app_type, app_server_name, app_version)
+    exec_cmd_via_shell_result_true(cmd)
 
+    print "docker image built done, get container hash code up ^ , and run command down ;"
+
+    port_binding = ""
+
+    for physical, virtual in app_bind:
+        port_binding += "-p "
+        port_binding += ":".join(physical, virtual)
+
+    print "sudo docker run -d %s --name=\'%s\' ${container_hash}" % {port_binding, app_server_name}
 
 # begin build
 print "begin build..."
