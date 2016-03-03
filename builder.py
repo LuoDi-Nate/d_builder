@@ -245,7 +245,7 @@ def build_jar():
 
     exec_cmd_via_shell_result_true(cmd)
 
-    print "sudo docker run -d --name=\'%s\' ${container_hash}" % { app_server_name}
+    print "sudo docker run -d --name=\'%s\' ${container_hash}" % app_server_name
 
 
 # war build operation
@@ -273,7 +273,7 @@ def build_war():
         port_binding += " -p "
         port_binding += physical + ":" + virtual
 
-    print "sudo docker run -d %s --name=\'%s\' ${container_hash}" % {port_binding, app_server_name}
+    print "sudo docker run -d %s --name=\'%s\' ${container_hash}" % port_binding, app_server_name
 
 # begin build
 print "begin build..."
