@@ -271,7 +271,7 @@ def build_war():
 
     for physical in app_bind:
         port_binding += " -p "
-        port_binding += physical + ":" + app_bind[physical]
+        port_binding += physical + ":" + app_bind.get(physical)
 
     print "sudo docker run -d %s --name=\'%s\' ${container_hash}" % port_binding, app_server_name
 
