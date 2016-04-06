@@ -2,6 +2,7 @@ import getopt
 import sys
 import os
 import time
+import random
 
 import jar_dockerfile as jar
 import webapp_dockerfile as war
@@ -245,7 +246,7 @@ def build_jar():
 
     exec_cmd_via_shell_result_true(cmd)
 
-    print "sudo docker run -d --name=\'%s\' ${container_hash}" % app_server_name
+    print "sudo docker run -d --name=\'%s_%s_%s\' ${container_hash}" % (app_server_name, app_version, random.randint(0, 999))
 
 
 # war build operation
@@ -273,7 +274,7 @@ def build_war():
         port_binding += " -p "
         port_binding += physical + ":" + app_bind.get(physical)
 
-    print "sudo docker run -d %s --name=\'%s\' ${container_hash}" % (port_binding, app_server_name)
+    print "sudo docker run -d %s --name=\'%s_%s_%s\' ${container_hash}" % (port_binding, app_server_name, app_version, random.randint(0, 999))
 
 # begin build
 print "begin build..."
