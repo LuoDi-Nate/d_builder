@@ -6,6 +6,7 @@ import random
 
 import jar_dockerfile as jar
 import webapp_dockerfile as war
+import html_dockerfile as html
 
 
 """
@@ -156,6 +157,9 @@ def replace_args_4_war():
 
 def replace_args_4_html():
     print "make docker file 4 html"
+    global war_docker_file, app_author, app_author_mail
+    war_docker_file = war_docker_file.replace("<<._ AUTHOR>>", app_author)
+    war_docker_file = war_docker_file.replace("<<._ AUTHOR_MAIL>>", app_author_mail)
     pass
 
 
@@ -218,7 +222,7 @@ def gen_dockerfile_by_apptype(app_type, dockerfile_path):
     elif app_type == "war":
         file.write(war_docker_file)
     elif app_type == "html":
-        pass
+        file.write(html_docker_file)
     else:
         exit_with_msg("wrong app type.")
 
@@ -275,6 +279,33 @@ def build_war():
         port_binding += physical + ":" + app_bind.get(physical)
 
     print "sudo docker run -d %s --name=\'%s_%s_%s\' ${container_hash}" % (port_binding, app_server_name, app_version, random.randint(0, 999))
+
+
+def build_html():
+    # copy tomcat here
+    cmd = "cp -r %s %s" % (tomcat_path, dir_name)
+    exec_cmd_via_shell_result_true(cmd)
+     # deploy
+    cmd = "rm -rf %s/tomcat8/webapps/ROOT/*" % (dir_name)
+    exec_cmd_via_shell_result_true(cmd)
+
+    cmd = "cp -r %s/* %s/tomcat8/webapps/ROOT/" % (app_path, dir_name)
+    exec_cmd_via_shell_result_true(cmd)
+
+    print "build done! exec downstairs shell ..."
+    cmd = "cd %s ; sudo docker build -t \"%s-%s-%s\" . " % (dir_name, app_type, app_server_name, app_version)
+    exec_cmd_via_shell_result_true(cmd)
+
+    print "docker image built done, get container hash code up ^ , and run command down ;"
+
+    port_binding = ""
+
+    for physical in app_bind:
+        port_binding += " -p "
+        port_binding += physical + ":" + app_bind.get(physical)
+
+    print "sudo docker run -d %s --name=\'%s_%s_%s\' ${container_hash}" % (port_binding, app_server_name, app_version, random.randint(0, 999))
+
 
 # begin build
 print "begin build..."
