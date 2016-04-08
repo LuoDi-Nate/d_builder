@@ -315,7 +315,7 @@ if app_type == "jar":
 elif app_type == "war":
     build_war()
 elif app_type == "html":
-    pass
+    build_html()
 
 
 
