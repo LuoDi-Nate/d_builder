@@ -51,7 +51,7 @@ opts, args = getopt.getopt(sys.argv[1:], "t:u:p:n:v:a:m:")
 for opt, value in opts:
     if opt == '-t':
         print "-t :", value
-        if value not in ("jar", "war"):
+        if value not in ("jar", "war", "html"):
             exit_with_msg("invalid value : \'-t\' :" + value)
 
         app_type = value
