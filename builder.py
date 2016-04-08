@@ -157,9 +157,9 @@ def replace_args_4_war():
 
 def replace_args_4_html():
     print "make docker file 4 html"
-    global war_docker_file, app_author, app_author_mail
-    war_docker_file = war_docker_file.replace("<<._ AUTHOR>>", app_author)
-    war_docker_file = war_docker_file.replace("<<._ AUTHOR_MAIL>>", app_author_mail)
+    global html_docker_file, app_author, app_author_mail
+    html_docker_file = html_docker_file.replace("<<._ AUTHOR>>", app_author)
+    html_docker_file = html_docker_file.replace("<<._ AUTHOR_MAIL>>", app_author_mail)
     pass
 
 
@@ -187,6 +187,7 @@ elif app_type == "jar":
 elif app_type == "html":
     check_args_4_html()
     # TODO make html docker file
+    html_docker_file = html.html_dockerfile
     replace_args_4_html()
 
 # generator dir name 4 dockerfile
